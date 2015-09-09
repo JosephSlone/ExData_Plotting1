@@ -8,5 +8,7 @@ To generate each plot, use the source command...
 * source("plot4.R")
 
 The plotting programs will only call the download and unzip routines when 
-necessary.
+necessary. The download routine uses a file 'semaphore' system to prevent the operator from download the zip file unnecessarily. It you wish to re-download the zip file, simply delete the file 'semaphore.txt' and re-run one of the plots.
+
+-- Joe
 
