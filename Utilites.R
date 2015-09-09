@@ -50,7 +50,7 @@ load.data <- function() {
 
     message("Loading data into datatable")
 
-    # Uses pipe and the grep command line program to filter the
+    # Uses R pipe function and the grep command line program to filter the
     # data to the correct dates.
 
     df <- read.csv(pipe('grep "^[1-2]/2/2007" "household_power_consumption.txt"'),
