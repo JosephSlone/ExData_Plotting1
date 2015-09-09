@@ -1,0 +1,41 @@
+source('Utilites.R')
+dt <- load.data()
+
+message("Generating Plot - plot4.png")
+
+png("plot4.png")
+
+# Create a 2x2 matrix for the sub-plots.
+par(mfrow=c(2,2))
+
+
+#Global Active Power - Line
+
+plot(dt$timestamp, dt$Global_active_power, type="l",
+     ylab="Global Active Power", xlab="")
+
+# Voltage
+plot(dt$timestamp, dt$Voltage, type="l", xlab="datetime", ylab="Voltage")
+
+# Energy Sub Metering - Stacked
+
+plot(dt$timestamp, dt$Sub_metering_1, col = 'black',
+     type='l', xlab="", ylab="Energy sub metering")
+
+points(dt$timestamp, dt$Sub_metering_2, col="red", type="l")
+points(dt$timestamp, dt$Sub_metering_3, col="blue", type="l")
+legend("topright",
+       legend=c('Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3'),
+       col=c("black","red","blue"), lty=c(1,1))
+
+# Global Reactive Power
+#
+# NOTE:  I'm using the labels shown in the example, even though that
+# isn't consistent with the others.
+
+plot(dt$timestamp, dt$Global_reactive_power, type="l",
+xlab="datetime", ylab="Global_reactive_power")
+
+
+dev.off()
+message("Done!")
