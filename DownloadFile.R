@@ -23,8 +23,8 @@ download.data <- function(source, target){
 load.data <- function() {
 
 	# Commented out for speed.
-	# download.data(source, target)
-	# unzip(target)
+	download.data(source, target)
+	unzip(target)
 
     message("Loading data into datatable")
 	df <- read.csv("household_power_consumption.txt",
