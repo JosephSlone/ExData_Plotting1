@@ -1,8 +1,5 @@
-# This function downloads a binary source file from a URL to the
-# current directory and leaves it in the target file.
-#
-# Cheating... Change method='wininet' to either wget or curl if
-# you are on a linux box.
+# download.data() Downloads the zip file and unzips it, leaving the
+# payload in the root directory of the project.
 
 source_file = 'https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip'
 target_file = 'data.zip'
@@ -11,9 +8,12 @@ library(RCurl)
 library(data.table)
 library(dplyr)
 
+# This is a simple semaphore system.  It can be used to signal a section
+# of code that an event has occured. (Such as downloading a file)
+
 # Creates a semaphore, only if it doesn't exist
 
-create_semaphore <- function() {
+create.semaphore <- function() {
 
     if (!file.exists('semaphore.txt')) {
         file_connection <- file('semaphore.txt')
@@ -23,7 +23,7 @@ create_semaphore <- function() {
 
 # Checks to see if the semaphore has been set
 
-is_semaphore <- function() {
+is.semaphore <- function() {
     return_val = FALSE
     if (file.exists('semaphore.txt')){
         return_val = TRUE
@@ -32,7 +32,34 @@ is_semaphore <- function() {
     return(return_val)
 }
 
-# This function unzips the file and loads the data into a data.table
+# Download and unzip the data file, leaving the payload
+# in the root directory of the project.
+
+download.data <- function() {
+
+    # Only download the file if we haven't done it yet.
+    #
+    # Yes, I know that I could have checked for the existence of
+    # the zip file.  This is more flexible.
+    #
+
+    if (! is.semaphore()) {
+        message("Downloading the zip file")
+        bin <- getBinaryURL(source_file, ssl.verifypeer=FALSE)
+        con <- file(target_file, open="wb")
+        writeBin(bin, con)
+        close(con)
+        unzip(target_file)
+        message("Done!")
+        create.semaphore()
+    }
+
+}
+
+#
+# Load the data into a data table, including only the dates 1/2/2007 and 2/2/2007
+# Add a timestamp column to the table.
+#
 
 load.data <- function() {
 
@@ -42,16 +69,16 @@ load.data <- function() {
     # the zip file.  This is more flexible.
     #
 
-    if (! is_semaphore()) {
-    	download.file(url=source_file, method='wininet', destfile=target_file)
-        unzip(target_file)
-        create_semaphore()
-    }
-
     message("Loading data into datatable")
 
     # Uses R pipe function and the grep command line program to filter the
     # data to the correct dates.
+    #
+    # If the grep system command isn't available, then this won't work
+    #
+    # The standard git installation, or possibly R Tools can provide
+    # grep if one using Windows.
+    #
 
     df <- read.csv(pipe('grep "^[1-2]/2/2007" "household_power_consumption.txt"'),
                    sep=";", na.strings="?",

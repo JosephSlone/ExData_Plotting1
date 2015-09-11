@@ -2,14 +2,42 @@
 # Generate a 2x2 plot matrix.
 
 # Load a utility library that manages the downloads.
-source('Utilites.R')
-
-# load.data() (found in Utilities.R) Checks to see if the zip file has been downloaded from
-# the provided URL.  If it hasn't then it downloads the file and unzips it.
-#
-# Then it only imports records for February 1st and 2nd 2007.
+# source('Utilites.R')
+# load.data()  only imports records for February 1st and 2nd 2007.
 # Finaly, it creates a timestamp field from the Date and Time fields and returns
 # a data.table object.
+
+# Okay, I have become nervouse about reviewers grading my code incorrectly.
+# I had intended to keep load.data() in a seperate file, but paranoia has
+# set in.
+#
+
+load.data <- function() {
+
+    message("Loading data into datatable")
+
+    # Uses R pipe function and the grep command line program to filter the
+    # data to the correct dates.
+
+    df <- read.csv(pipe('grep "^[1-2]/2/2007" "household_power_consumption.txt"'),
+                   sep=";", na.strings="?",
+                   colClasses=c('character','character', 'numeric', 'numeric',
+                                'numeric', 'numeric', 'numeric',
+                                'numeric','numeric'),
+                   col.names = c('Date', 'Time', 'Global_active_power',
+                                 'Global_reactive_power', 'Voltage',
+                                 'Global_intensity', 'Sub_metering_1',
+                                 'Sub_metering_2','Sub_metering_3'),
+                   header = FALSE
+    )
+
+    df <- within(df, { timestamp = as.POSIXct(paste(Date, Time) , format="%d/%m/%Y %H:%M:%S")})
+
+    dt <- data.table(df)
+    message("Done!")
+
+    return(dt)
+}
 
 dt <- load.data()
 
