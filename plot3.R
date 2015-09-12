@@ -19,7 +19,7 @@ load.data <- function() {
     # data to the correct dates.
     
     # To get the grep command for Windows:  
-    # Gget and install the appropriate version of Rtools from CRAN, 
+    # Get and install the appropriate version of Rtools from CRAN, 
     # and add the Rtools directory to your path.  The tools include 
     # a version of grep (along with a number of other 'NIX utilities).  
     #
