@@ -18,6 +18,14 @@ load.data <- function() {
 
     # Uses R pipe function and the grep command line program to filter the
     # data to the correct dates.
+    
+    # To get the grep command for Windows:  
+    # Get and install the appropriate version of Rtools from CRAN, 
+    # and add the Rtools directory to your path.  The tools include 
+    # a version of grep (along with a number of other 'NIX utilities).  
+    #
+    # The tools can be obtained from here:  
+    #      https://cran.r-project.org/bin/windows/Rtools/
 
     df <- read.csv(pipe('grep "^[1-2]/2/2007" "household_power_consumption.txt"'),
                    sep=";", na.strings="?",
